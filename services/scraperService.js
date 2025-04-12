@@ -1,10 +1,6 @@
 import supabase from '../config/supabase.js';
 import { searchGoogleMaps } from './searchService.js';
-<<<<<<< HEAD
 import { processData } from './MainDataPro.js';
-=======
-import { processBusinessLinks } from './dataProcessor.js';
->>>>>>> 2502bd6d79467f3b8956fbd9c4b3431e7be8d592
 import { createObjectCsvWriter } from 'csv-writer';
 import { saveResultsToCsv } from '../utils/csvUtils.js';
 import path from 'path';
@@ -33,11 +29,7 @@ export async function runScraping(user_id, task_id) {
     
     // Array to accumulate all Google search links from every state
     const GoogleSearchLinks = [];
-<<<<<<< HEAD
     const concurrencyLimit = 7;
-=======
-    const concurrencyLimit = 3;
->>>>>>> 2502bd6d79467f3b8956fbd9c4b3431e7be8d592
 
     // Worker function: picks one state from the queue until empty.
     async function worker() {
@@ -81,11 +73,7 @@ export async function runScraping(user_id, task_id) {
 
     await csvWriter.writeRecords(uniqueGoogleSearchLinks.map(link => ({ href: link })));
     
-<<<<<<< HEAD
     const processedResults = await processData(uniqueGoogleSearchLinks, listFields);
-=======
-    const processedResults = await processBusinessLinks(uniqueGoogleSearchLinks, listFields);
->>>>>>> 2502bd6d79467f3b8956fbd9c4b3431e7be8d592
 
     // --- Save final results to a CSV file ---
     const outputFileName = `results_${user_id}_${task_id}.csv`;
