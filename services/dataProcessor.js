@@ -8,20 +8,15 @@ const browserManager = new BrowserManager();
 browserManager.useExtension(getExtensionPath('rektCaptcha-extension'));
 
 export async function initializeBrowser() {
-<<<<<<< HEAD
   if (!browserManager.browser) {
     await browserManager.initialize();
   }
-=======
-  await browserManager.initialize();
->>>>>>> 2502bd6d79467f3b8956fbd9c4b3431e7be8d592
 }
 
 export async function closeBrowser() {
   await browserManager.close();
 }
 
-<<<<<<< HEAD
 /**
  * Splits an array into batches of a given size.
  */
@@ -51,62 +46,13 @@ async function navigateWithRetry(page, url, options = {}, maxRetries = 3) {
       delay *= 2;
     }
   }
-=======
-export async function processBusinessLinks(links, fields) {
-  // Ensure the browser is initialized.
-  if (!browserManager.browser) {
-    await initializeBrowser();
-  }
-
-  // Use a semaphore with a concurrency of 5.
-  const semaphore = new Semaphore(5);
-  const results = [];
-
-  // Stagger delay of 500ms between launching pages.
-  const delayMs = 1500;
-
-  const processWithSemaphore = async (link, isRetry = false) => {
-    // Stagger requests with a delay.
-    await new Promise(resolve => setTimeout(resolve, delayMs));
-    await semaphore.acquire();
-    const page = await browserManager.newPage();
-
-    try {
-      const result = await processSingleLink(page, link, fields);
-      results.push(result);
-    } catch (error) {
-      console.error(`Error processing link ${link}:`, error.message);
-      results.push(createEmptyResult(fields));
-    } finally {
-      await page.close();
-      semaphore.release();
-    }
-  };
-
-  await Promise.all(links.map(link => processWithSemaphore(link)));
-  return results;
-}
-
-function createEmptyResult(fields) {
-  return Object.fromEntries(fields.map(field => [field, '']));
->>>>>>> 2502bd6d79467f3b8956fbd9c4b3431e7be8d592
 }
 
 async function processSingleLink(page, link, fields, singleImage = true) {
   const data = Object.fromEntries(fields.map(field => [field, '']));
   try {
-<<<<<<< HEAD
     // Use retry logic for navigation
     await navigateWithRetry(page, link, { waitUntil: 'domcontentloaded', timeout: 60000 });
-=======
-    // Navigate to the link with a timeout.
-    await page.goto(link, { 
-      waitUntil: 'domcontentloaded',
-      timeout: 60000
-    });
-
-    // Wait for the main title element.
->>>>>>> 2502bd6d79467f3b8956fbd9c4b3431e7be8d592
     await page.waitForSelector('h1.DUwDvf', { timeout: 60000 });
 
     if (fields.includes('title')) {
@@ -144,10 +90,6 @@ async function processSingleLink(page, link, fields, singleImage = true) {
       if (addressElem) {
         const address = (await addressElem.innerText()).trim();
         data.address = address;
-<<<<<<< HEAD
-=======
-        // Optionally get city/area from address.
->>>>>>> 2502bd6d79467f3b8956fbd9c4b3431e7be8d592
         const { city, area } = await getLocationFromAddress(address);
         if (fields.includes('city')) data.city = city;
         if (fields.includes('area')) data.area = area;
@@ -168,7 +110,6 @@ async function processSingleLink(page, link, fields, singleImage = true) {
       }
     }
 
-<<<<<<< HEAD
     if (fields.includes('category')) {
       const categoryElem = await page.$("button.DkEaL");
       if (categoryElem) {
@@ -223,71 +164,6 @@ async function processSingleLink(page, link, fields, singleImage = true) {
       } catch (error) {
         console.error('Error processing images:', error);
         data.images = '';
-=======
-    if (fields.includes('images')) {
-      let firstImageUrl = '';
-
-      // First, try to get an image without clicking gallery.
-      try {
-        const firstImageElem = await page.$('.U39Pmb[style]');
-        if (firstImageElem) {
-          const styleValue = await firstImageElem.getAttribute('style');
-          firstImageUrl = styleValue ? extractBackgroundImageUrl(styleValue) : '';
-        }
-      } catch (error) {
-        console.error('Error getting first image:', error);
-      }
-
-      // If no valid image, try opening the image gallery.
-      if (!firstImageUrl || firstImageUrl.trim() === '//:0') {
-        try {
-          await page.waitForSelector('button.aoRNLd', { timeout: 5000 });
-          const buttonElem = await page.$('button.aoRNLd');
-          if (buttonElem) {
-            await buttonElem.click();
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            const firstImageElem = await page.$('.U39Pmb[style]');
-            if (firstImageElem) {
-              const styleValue = await firstImageElem.getAttribute('style');
-              firstImageUrl = styleValue ? extractBackgroundImageUrl(styleValue) : '';
-            }
-          }
-        } catch (error) {
-          console.error('Error opening images:', error);
-        }
-      }
-      
-      if (singleImage) {
-        data.images = firstImageUrl && firstImageUrl.trim() !== '//:0'
-          ? convertToHd(firstImageUrl)
-          : '';
-      } else {
-        // For multiple images, you could scroll and gather more.
-        await scrollUntilImagesStop(page);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        const scrolledImageElems = await page.$$('.U39Pmb[style]');
-        const scrolledImageUrls = await Promise.all(scrolledImageElems.map(async (elem) => {
-          const styleValue = await elem.getAttribute('style');
-          return styleValue ? extractBackgroundImageUrl(styleValue) : '';
-        }));
-        if (scrolledImageUrls.every(url => url.trim() === '//:0')) {
-          await new Promise(resolve => setTimeout(resolve, 5000));
-          const retryImageElems = await page.$$('.U39Pmb[style]');
-          const retryImageUrls = await Promise.all(retryImageElems.map(async (elem) => {
-            const styleValue = await elem.getAttribute('style');
-            return styleValue ? extractBackgroundImageUrl(styleValue) : '';
-          }));
-          data.images = retryImageUrls
-            .filter(url => url.trim() !== '//:0')
-            .map(convertToHd)
-            .join(',');
-        } else {
-          data.images = scrolledImageUrls
-            .filter(url => url.trim() !== '//:0')
-            .map(convertToHd)
-            .join(',');
-        }
->>>>>>> 2502bd6d79467f3b8956fbd9c4b3431e7be8d592
       }
     }
 
@@ -306,7 +182,6 @@ function convertToHd(url) {
   return url.replace(/=w\d+-h\d+-k-no/, '=s4196-v1');
 }
 
-<<<<<<< HEAD
 /**
  * Process business links in batches with staggered delays and retries.
  */
@@ -354,6 +229,3 @@ export async function processBusinessLinks(links, fields) {
   await Promise.all(links.map(link => processWithSemaphore(link)));
   return results;
 }
-=======
-export { initializeBrowser, closeBrowser, processBusinessLinks };
->>>>>>> 2502bd6d79467f3b8956fbd9c4b3431e7be8d592
