@@ -25,7 +25,7 @@ class BrowserManagerList {
     
     // Launch the browser with persistent context
     this.browser = await chromium.launchPersistentContext(userDataDir, {
-      headless: false,
+      headless: true,
       ignoreDefaultArgs: ['--enable-automation'],
       args: [
         `--disable-extensions-except=${this.extensionPath}`,
