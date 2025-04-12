@@ -1,0 +1,31 @@
+{
+  "name": "nodemon-fixing",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "exports": {
+    "./browser/*": "./browser/*.js",
+    "./utils/*": "./utils/*.js",
+    "./services/*": "./services/*.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
+    "csv-writer": "^1.6.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "playwright": "^1.51.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
