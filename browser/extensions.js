@@ -7,7 +7,8 @@ export function getExtensionPath(extensionName) {
   let extensionPath;
   if (extensionName === 'rektCaptcha-extension') {
     // Use the full path to your extension build directory
-    extensionPath = path.resolve(process.cwd(), 'browser' , 'extensions', 'rektCaptcha-extension', 'build');
+    const __dirname = path.dirname(decodeURI(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')));
+    extensionPath = path.join(__dirname, '..', 'browser', 'extensions', 'rektCaptcha-extension', 'build');
   } else {
     extensionPath = path.resolve(process.cwd(), 'extensions', extensionName);
   }
