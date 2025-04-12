@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 
 export function getExtensionPath(extensionName) {
-  // Use the environment variable or process.cwd() as the base path.
+
   const basePath = process.env.EXTENSIONS_BASE_PATH || process.cwd();
   
   // Log the base path and the full directory structure for debugging.
