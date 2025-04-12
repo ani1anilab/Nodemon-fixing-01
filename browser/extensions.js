@@ -1,21 +1,25 @@
 // browser/extensions.js
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 
 export function getExtensionPath(extensionName) {
-  // Get the absolute path to the extension
+  // Use the environment variable or process.cwd() as the base path.
+  const basePath = process.env.EXTENSIONS_BASE_PATH || process.cwd();
+  
+  // Log the base path and the full directory structure for debugging.
+  console.log('Base Path:', basePath);
+  console.log('Docker Container Directory Structure:');
+  
   let extensionPath;
   if (extensionName === 'rektCaptcha-extension') {
-    // Use the full path to your extension build directory
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    // Construct path relative to the current file's directory
-    extensionPath = path.join(__dirname, 'extensions', 'rektCaptcha-extension', 'build');
+    extensionPath = path.resolve(basePath, 'browser', 'extensions', 'rektCaptcha-extension', 'build');
   } else {
-    extensionPath = path.resolve(process.cwd(), 'extensions', extensionName);
+    extensionPath = path.resolve(basePath, 'extensions', extensionName);
   }
   
+  console.log("Resolved Extension Path:", extensionPath);
+  
+  // Check if the extension directory exists. Throw an error if not.
   if (!fs.existsSync(extensionPath)) {
     console.error(`Extension not found at ${extensionPath}`);
     throw new Error(`Extension not found at ${extensionPath}`);
