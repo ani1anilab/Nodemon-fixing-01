@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "postinstall": "git submodule update --init --recursive && cd browser/extensions/rektCaptcha-extension && npm install && npm run build && cd ../../.."
   },
   "keywords": [],
   "author": "",
